@@ -1,0 +1,4 @@
+int,identifier,1,1
+a,identifier,1,4
+=,operator,1,5
+3.2,number,1,6
