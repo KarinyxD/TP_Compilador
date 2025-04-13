@@ -1,0 +1,9 @@
+# Este é um comentário de uma linha
+x = 10 + 20;  # Outro comentário
+y = x * 2;
+
+#$ Este é um comentário
+multi-linha que termina aqui $#
+
+z = "string literal";
+w = 'outro literal';

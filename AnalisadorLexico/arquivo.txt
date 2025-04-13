@@ -1,3 +1,0 @@
- a == b;
-a = -25589;
-x = ("djhasdj%^*(*)#!#@!'uidhasuidhasuidhsi");

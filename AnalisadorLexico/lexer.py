@@ -1,14 +1,25 @@
 import re
-import csv
-# aceitar outros numeros, como elevados e numero negativos
-# adicionar o ID no csv (?)
+
 # deixar mais generico (?)
+# recuperacao de erro
+
 IDENTIFIER_PATTERN = r'[a-zA-Z_]'
 NUMBER_PATTERN = r'[0-9]'
-OPERATOR_PATTERN = r'[-+*/=<>!&|]'
+OPERATOR_PATTERN = r'[-+*^/=<>!&|]'
 SEPARATOR_PATTERN = r'[\n;{},()]'
 LITERAL_PATTERN = r'[\"\']'
 ALPHANUM_PATTERN =  r'[a-zA-Z0-9_]'
+COMMENT_PATTERN = r'[#]'
+
+TOKEN_TYPE_IDS = {
+    'identifier': 1,
+    'number': 2,
+    'operator': 3,
+    'separator': 4,
+    'literal': 5,
+    'comment': 6,
+    'error': 404
+}
 
 def identifier(anchor, file, char, writer):
   lookahead = anchor.copy()
@@ -27,7 +38,7 @@ def identifier(anchor, file, char, writer):
       error(lookahead, next_char)
       break
   print(f"Identificador encontrado: {token}")
-  writer.writerow({'token': token, 'type': 'identifier', 'line': anchor['line'], 'column': anchor['column']})
+  writer.writerow({'id': TOKEN_TYPE_IDS['identifier'], 'token': token, 'type': 'id', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']
   return
@@ -55,7 +66,7 @@ def number(anchor, file, char, writer):
       error(lookahead, next_char)
       break
   print(f"Número encontrado: {token}")
-  writer.writerow({'token': token, 'type': 'number', 'line': anchor['line'], 'column': anchor['column']})
+  writer.writerow({'id': TOKEN_TYPE_IDS['number'],'token': token, 'type': 'num', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']
   return
@@ -78,7 +89,7 @@ def operator(anchor, file, char, writer):
       error(lookahead, next_char)
       break
   print(f"Operador encontrado: {token}")
-  writer.writerow({'token': token, 'type': 'operator', 'line': anchor['line'], 'column': anchor['column']})
+  writer.writerow({'id': TOKEN_TYPE_IDS['operator'],'token': token, 'type': 'op', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']
   return
@@ -98,7 +109,7 @@ def separator(anchor, file, char, writer):
       error(lookahead, next_char)
       break
   print(f"Separador encontrado: {token}")
-  writer.writerow({'token': token, 'type': 'separator', 'line': anchor['line'], 'column': anchor['column']})
+  writer.writerow({'id': TOKEN_TYPE_IDS['separator'],'token': token, 'type': 'sep', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']
   return
@@ -120,69 +131,40 @@ def literal(anchor, file, char, writer):
     return
       
   print(f"Literal encontrado: {token}")
-  writer.writerow({'token': token, 'type': 'literal', 'line': anchor['line'], 'column': anchor['column']})
+  writer.writerow({'id': TOKEN_TYPE_IDS['literal'],'token': token, 'type': 'lit', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']
   return
 
+def comment(anchor, file, char, writer):
+  lookahead = anchor.copy()
+  token = char
+  next_char = file.read(1)
+  if next_char == '$':
+    token += next_char
+    lookahead['column'] += 1
+    while (next_char := file.read(1)):
+      token += next_char
+      lookahead['column'] += 1
+      if next_char == '\n': 
+        lookahead['line'] += 1
+        lookahead['column'] = 0
+      if token.endswith('$#'): 
+        break
+  else:
+    while (next_char := file.read(1)):
+      token += next_char
+      lookahead['column'] += 1
+      if next_char == '\n':  
+        lookahead['line'] += 1
+        lookahead['column'] = 0
+        break
+  print(f"Comentário econtrado: {token}")
+  writer.writerow({'id': TOKEN_TYPE_IDS['comment'],'token': token, 'type': 'com', 'line': anchor['line'], 'column': anchor['column']})
+  anchor['column'] = lookahead['column']
+  anchor['line'] = lookahead['line']
+  return
+  
 def error(anchor, char):
   print(f"Erro: caractere inválido '{char}' na linha {anchor['line']}, coluna {anchor['column']}")
   return
-
-def update_position(anchor, char):
-  if char == '\n':
-      anchor['line'] += 1
-      anchor['column'] = 0
-  else:
-      anchor['column'] += 1
-      
-
-def process_file(file, writer):
-  anchor = {'line': 1, 'column': 0}
-  
-  while (char := file.read(1)):
-    anchor["column"] += 1
-    if char == '\n':
-      anchor['line'] += 1
-      anchor['column'] = 0
-      continue
-    if char in [' ', '\t']: 
-      continue
-    if re.match(IDENTIFIER_PATTERN, char):
-      identifier(anchor, file, char, writer)
-    elif re.match(NUMBER_PATTERN, char):
-      number(anchor, file, char, writer)
-    elif re.match(OPERATOR_PATTERN, char):
-      operator(anchor, file, char, writer)
-    elif re.match(LITERAL_PATTERN, char):
-      literal(anchor, file, char, writer)
-    elif re.match(SEPARATOR_PATTERN, char):
-      separator(anchor, file, char, writer)
-    else: # invalid caracter
-        error(anchor, char)
-    # elif char == 'b':
-    #   comentario()
-  return
-
-def main():
-  csv_filename = 'lista_tokens.csv'
-  input_filename = 'arquivo.txt'
-  try:
-    with open(csv_filename, mode='w', newline='') as tokens_file:
-      fieldnames = ['token', 'type', 'line', 'column']
-      # Write as a dictionary (columns and keys {'token': 'a', 'type': 'identifier'})
-      writer = csv.DictWriter(tokens_file, fieldnames=fieldnames)
-      
-      with open(input_filename, 'r') as file:
-        process_file(file, writer)
-    
-  except FileNotFoundError as e:
-      print(f"Erro: Arquivo não encontrado - {e.filename}")
-  except Exception as e:
-      print(f"Erro inesperado: {e}") 
-  
-  return
-
-
-main()
-    
