@@ -19,9 +19,11 @@ id,token,type,line,column
 multi-linha que termina aqui $#",com,5,1
 1,z,id,8,1
 3,=,op,8,3
-5,"""string literal""",lit,8,5
-4,;,sep,8,21
-1,w,id,9,1
-3,=,op,9,3
-5,'outro literal',lit,9,5
-4,;,sep,9,20
+5,"""string 
+literal""",lit,8,5
+4,;,sep,9,9
+1,w,id,10,1
+3,=,op,10,3
+5,"'outro 
+literal'",lit,10,5
+4,;,sep,11,9
