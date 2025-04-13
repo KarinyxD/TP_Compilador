@@ -25,7 +25,7 @@ O projeto está organizado da seguinte forma:
 
 
 ## Instruçoes de Execuçao
-## Como usar o Makefile
+### Como usar o Makefile
 
 O `Makefile` foi configurado para facilitar a execução do programa. Ele contém os seguintes passos:
 
