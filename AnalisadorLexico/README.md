@@ -12,10 +12,15 @@ Certifique-se de que você tem o seguinte instalado no seu sistema:
 ## Estrutura do Projeto
 
 O projeto está organizado da seguinte forma:
+
 ├── main.py # Arquivo principal que executa o analisador léxico 
+
 ├── lexer.py # Contém as funções e padrões de análise léxica 
+
 ├── Makefile # Arquivo Makefile para automação 
+
 ├── file.txt # Arquivo de entrada de exemplo 
+
 ├── tokens.csv # Arquivo de saída gerado (tokens)
 
 
@@ -52,6 +57,4 @@ make clean
 #### Observações:
 Certifique-se de que o arquivo de entrada exista antes de executar o programa. O arquivo de saída será criado automaticamente, caso não exista, mas é recomendado que ele já esteja presente para evitar possíveis problemas.
 
-## Autor
-Este projeto foi desenvolvido como parte de um trabalho prático para a disciplina de Compiladores na UFSJ.
 
