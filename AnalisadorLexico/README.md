@@ -25,9 +25,9 @@ O projeto está organizado da seguinte forma:
 
 
 ## Instruçoes de Execuçao
-### Como usar o Makefile
+## Como usar o Makefile
 
-O `Makefile` foi configurado para facilitar a execução do programa. Ele contém as seguintes regras:
+O `Makefile` foi configurado para facilitar a execução do programa. Ele contém os seguintes passos:
 
 #### 1. **Gerar o executável**
 
@@ -48,7 +48,7 @@ Se você quiser executar o programa com um arquivo de entrada ou saída diferent
 ./lexer <arquivo_entrada> <arquivo_saida>
 ```
 
-### 3. **Limpar o executável**
+#### 3. **Limpar o executável**
 Para remover o executável gerado (lexer), use:
 ```bash
 make clean
