@@ -14,7 +14,7 @@ Entrega dia 23/04
 | **Operadores**      | `+`, `==`, `&&`, `*`, `=`, `^`, `-`, `<=`, `>=`, `!=`, `!`, `<`, `>`, `\|\|`.| Operadores compostos não definidos (`===`, `&\|`, `++`, `--`, etc.).          |
 | **Separadores**     | `\n`, `;`, `{`, `}`, `,`, `(`, `)`.                                      | Outros caracteres como `[`, `]`, `:`.                                          |
 | **Literais**        | Strings delimitadas por aspas simples ou duplas(pode conter quebra de linha).| Literais não fechados.                                                     |
-| **Comentários**     | `#` para uma linha, `#$ ... $#` para múltiplas linhas.                   | Comentários multi-linha não fechados. O caractere `#` imediatamente após alguma palavra.|
+| **Comentários**     | `#` para uma linha, `#$ ... $#` para múltiplas linhas.                   | Comentários multi-linha não fechados. O caractere `#` imediatamente após alguma palavra. Ex.: `int#comentário`|
 | **Erros**           | Caracteres inválidos como `@`, `~`, etc.                                 |                                                                                |
 
 ## Licença
