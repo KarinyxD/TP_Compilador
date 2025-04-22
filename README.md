@@ -8,8 +8,6 @@ Este projeto consiste no desenvolvimento de um compilador para a disciplina de *
 
 Desenvolver um compilador funcional que seja capaz de traduzir uma linguagem de entrada específica baseada em C, mais simplificada, para uma representação intermediária ou código executável, seguindo as etapas clássicas de compilação.
 
-Entrega dia 23/04
-
 ### **Especificações do Analisador Léxico**
 
 #### **Entrada**
