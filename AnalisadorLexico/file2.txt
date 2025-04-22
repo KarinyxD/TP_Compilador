@@ -1,10 +1,10 @@
 x = 10  # Identificador e número
 y = x + 5.5  # Operação com número decimal
-z = "string não fechada  # Literal não fechado
+z = "string não fechada"  # Literal não fechado
 a = 'outro literal'  # Literal válido
-b = 20 + @  # Caractere inválido
+b = 20 + @;  # Caractere inválido
 #$ Comentário multi-linha
 que não termina corretamente
-c = 30
+c = 30;
 #$ Comentário multi-linha correto
 termina aqui $#

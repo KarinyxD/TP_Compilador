@@ -39,8 +39,8 @@ def identifier(anchor, file, char, writer):
       lookahead['column'] += 1
       break
     else:
-      error(lookahead, next_char)
-      break
+      error(lookahead, next_char, file, writer)
+      return
   print(f"Identificador encontrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['identifier'], 'token': token, 'type': 'id', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
@@ -68,8 +68,8 @@ def number(anchor, file, char, writer):
       lookahead['column'] += 1
       break
     else:
-      error(lookahead, next_char)
-      break
+      error(lookahead, next_char, file, writer)
+      return
   print(f"Número encontrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['number'],'token': token, 'type': 'num', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
@@ -92,8 +92,8 @@ def operator(anchor, file, char, writer):
       file.seek(file.tell() - 1) # At alphanumerics, separators and literals, rewind one character
       break
     else:
-      error(lookahead, next_char)
-      break
+      error(lookahead, next_char, file, writer)
+      return
   print(f"Operador encontrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['operator'],'token': token, 'type': 'op', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
@@ -112,8 +112,8 @@ def separator(anchor, file, char, writer):
       lookahead['column'] += 1
       break
     else:
-      error(lookahead, next_char)
-      break
+      error(lookahead, next_char, file, writer)
+      return
   print(f"Separador encontrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['separator'],'token': token, 'type': 'sep', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
@@ -134,7 +134,8 @@ def literal(anchor, file, char, writer):
       lookahead['line'] += 1
       lookahead['column'] = 0
   if token[-1] != start_quote: # Final check
-    error(lookahead, f"Literal não fechado corretamente: {token}")
+    print(f"Erro: literal não fechado iniciado na linha {anchor['line']}, coluna {anchor['column']}")
+    error(anchor, start_quote , file, writer)
     return
   print(f"Literal encontrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['literal'],'token': token, 'type': 'lit', 'line': anchor['line'], 'column': anchor['column']})
@@ -158,6 +159,10 @@ def comment(anchor, file, char, writer):
         lookahead['column'] = 0
       if token.endswith('$#'): # End of multi-line comment
         break
+    if not token.endswith('$#'):
+      print(f"Erro: comentário multi-linha não fechado iniciado na linha {anchor['line']}, coluna {anchor['column']}")
+      error(anchor, char, file, writer)
+      return
   else: # Single-line comment
     while (next_char := file.read(1)):
       token += next_char
@@ -173,6 +178,16 @@ def comment(anchor, file, char, writer):
   return
 
 # Function to process errors
-def error(anchor, char):
+def error(anchor, char, file, writer):
   print(f"Erro: caractere inválido '{char}' na linha {anchor['line']}, coluna {anchor['column']}")
+  writer.writerow({'id': TOKEN_TYPE_IDS['error'],'token': char, 'type': 'err', 'line': anchor['line'], 'column': anchor['column']})
+
+  while (next_char := file.read(1)):
+    anchor['column'] += 1
+    if next_char == '\n':
+      anchor['line'] += 1
+      anchor['column'] = 0
+      break
+    if next_char == ';':
+      break
   return

@@ -27,7 +27,7 @@ def process_file(file, writer):
     elif re.match(COMMENT_PATTERN, char):
       comment(anchor, file, char, writer) # Comment
     else: # invalid caracter
-        error(anchor, char)
+        error(anchor, char, file, writer)
   return
 
 # Main function
