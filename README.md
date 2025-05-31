@@ -68,11 +68,11 @@ Desenvolver um compilador funcional que seja capaz de traduzir uma linguagem de 
 
   Isso vai apagar o executável lexer e o arquivo ast.pkl.
 
-  Nota
+  ###### Nota
 
-    O analisador sintático espera o arquivo de tokens CSV dentro da pasta AnalisadorLexico.
+  O analisador sintático espera o arquivo de tokens CSV dentro da pasta AnalisadorLexico.
 
-    O Makefile está configurado para usar caminhos relativos para facilitar a organização.
+  O Makefile está configurado para usar caminhos relativos para facilitar a organização.
 
 ## Licença
 
