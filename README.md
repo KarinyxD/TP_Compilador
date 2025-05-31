@@ -41,22 +41,22 @@ Desenvolver um compilador funcional que seja capaz de traduzir uma linguagem de 
 
   Entre na pasta TP_Compilador:
 
-    ```
+    ```bash
     cd TP_Compilador
     ```
 
   Rode o comando make, passando opcionalmente o arquivo de entrada para o léxico:
-    ```
+    ```bash
     make INPUT_FILE=seu_arquivo.txt
     ```
 
-    Se não passar INPUT_FILE, o padrão será file.txt.
+  Se não passar INPUT_FILE, o padrão será file.txt.
 
-    O analisador léxico irá gerar tokens.csv na pasta AnalisadorLexico.
+  O analisador léxico irá gerar tokens.csv na pasta AnalisadorLexico.
 
-    O analisador sintático irá ler tokens.csv e gerar ast.pkl.
+  O analisador sintático irá ler tokens.csv e gerar ast.pkl.
 
-    Após o processo, você verá no terminal a saída da AST gerada.
+  Após o processo, você verá no terminal a saída da AST gerada.
 
   Limpeza dos arquivos gerados
 
