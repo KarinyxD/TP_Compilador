@@ -41,14 +41,14 @@ Desenvolver um compilador funcional que seja capaz de traduzir uma linguagem de 
 
   Entre na pasta TP_Compilador:
 
-    ```bash
-    cd TP_Compilador
-    ```
+  ```bash
+  cd TP_Compilador
+  ```
 
   Rode o comando make, passando opcionalmente o arquivo de entrada para o léxico:
-    ```bash
-    make INPUT_FILE=seu_arquivo.txt
-    ```
+  ```bash
+  make INPUT_FILE=seu_arquivo.txt
+  ```
 
   Se não passar INPUT_FILE, o padrão será file.txt.
 
