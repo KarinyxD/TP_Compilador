@@ -1,5 +1,7 @@
 import csv
 import sys
+import pickle
+from tree import *
 
 # Estrutura para representar um token
 class Token:
@@ -49,8 +51,12 @@ class Parser:
         sys.exit(1)
 
     def parse(self):
+        statements = []
         while self.peek():
-            self.parse_stmt()
+            stmt = self.parse_stmt()
+            if stmt:
+                statements.append(stmt)
+        return Program(statements)
 
     def parse_stmt(self):
       # Pula todos os comentários antes de analisar o próximo comando
@@ -63,82 +69,95 @@ class Parser:
 
       if token.type == "id":
         if token.token == "int":
-          self.parse_declaration()
+          node = self.parse_declaration()
           self.match(";")  # consumir ';' após declaração
-          return
+          return node
         elif token.token == "if":
           return self.parse_if()
         elif token.token == "for":
           return self.parse_for()
         elif token.token == "print":
+          node = self.parse_print()
           self.match(";")  # consumir ';' após declaração
-          return self.parse_print()
+          return node
         else:
-          self.parse_assignment()
+          node = self.parse_assignment()
           self.match(";")  # consumir ';' após declaração
-          return
+          return node
       else:
         # Se chegar aqui, comando inválido para simplificação
         print(f"[Erro] Linha {token.line}, Coluna {token.column}: Comando inválido: '{token.token}'")
         self.current += 1  # Avança para tentar continuar a análise
         return
 
-
     def parse_declaration(self):
-        self.match_type("id")  # tipo
-        self.match_type("id")  # identificador
+        tipo = self.match_type("id").token
+        identificador = self.match_type("id").token
         self.match("=")
-        self.parse_expr()
+        expr = self.parse_expr()
+        return Declaration(tipo, identificador, expr)
 
     def parse_assignment(self):
-        self.match_type("id")
+        identificador = self.match_type("id").token
         self.match("=")
-        self.parse_expr()
+        expr = self.parse_expr()
+        return Assignment(identificador, expr)
 
     def parse_if(self):
         self.match("if")
         self.match("(")
-        self.parse_expr()
+        cond = self.parse_expr()
         self.match(")")
-        self.parse_block()
+        bloco = self.parse_block()
+        return IfStmt(cond, bloco)
 
     def parse_for(self):
         self.match("for")
         self.match("(")
-        self.parse_assignment()
+        init = self.parse_declaration()
         self.match(";")
-        self.parse_expr()
+        cond = self.parse_expr()
         self.match(";")
-        self.parse_assignment()
+        update = self.parse_assignment()
         self.match(")")
-        self.parse_block()
+        bloco = self.parse_block()
+        return ForStmt(init, cond, update, bloco)
 
     def parse_print(self):
         self.match("print")
         self.match("(")
-        self.match_type("lit")
+        lit = self.match_type("lit").token
         self.match(")")
+        return PrintStmt(lit)
 
     def parse_block(self):
         self.match("{")
+        stmts = []
         while self.peek() and self.peek().token != "}":
-            self.parse_stmt()
+            stmt = self.parse_stmt()
+            if stmt:
+                stmts.append(stmt)
         self.match("}")
+        return Block(stmts)
 
     def parse_expr(self):
-        self.parse_term()
+        left = self.parse_term()
         while self.peek() and self.peek().token in ("+", "-", "*", "/", ">", "<", "==", "!="):
-            self.match(self.peek().token)
-            self.parse_term()
+            op = self.match(self.peek().token).token
+            right = self.parse_term()
+            left = BinOp(op, left, right)
+        return Expr(left)
 
     def parse_term(self):
         token = self.peek()
         if token.type in ("id", "num", "lit"):
             self.current += 1
+            return Term(token.token)
         elif token.token == "(":
             self.match("(")
-            self.parse_expr()
+            expr = self.parse_expr()
             self.match(")")
+            return expr
         else:
             self.error("Expressão inválida")
 
@@ -158,7 +177,13 @@ def main():
 
     tokens = load_tokens_from_csv(sys.argv[1])
     parser = Parser(tokens)
-    parser.parse()
+    ast = parser.parse()
+    print("AST gerada:")
+    ast.pretty_print()
+    # Salvar em arquivo
+    with open("ast.pkl", "wb") as f:
+        pickle.dump(ast, f)
+    print("AST salva em ast.pkl")
     print("Análise sintática concluída com sucesso.")
 
 if __name__ == "__main__":

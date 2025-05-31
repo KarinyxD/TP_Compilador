@@ -1,8 +1,5 @@
 import re
 
-# deixar mais generico (?)
-# recuperacao de erro
-
 # Regular expressions
 IDENTIFIER_PATTERN = r'[a-zA-Z_]'
 NUMBER_PATTERN = r'[0-9]'
@@ -35,13 +32,16 @@ def identifier(anchor, file, char, writer):
     elif (re.match(SEPARATOR_PATTERN, next_char)): # At separators, rewind one character
       file.seek(file.tell() - 1) 
       break
+    elif (re.match(OPERATOR_PATTERN, next_char)): # At separators, rewind one character
+      file.seek(file.tell() - 1) 
+      break
     elif (re.match(r'[\t\s]', next_char)): # Stop at whitespace
       lookahead['column'] += 1
       break
     else:
       error(lookahead, next_char, file, writer)
       return
-  print(f"Identificador encontrado: {token}")
+  #print(f"Identificador encontrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['identifier'], 'token': token, 'type': 'id', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']
@@ -70,7 +70,7 @@ def number(anchor, file, char, writer):
     else:
       error(lookahead, next_char, file, writer)
       return
-  print(f"Número encontrado: {token}")
+  #print(f"Número encontrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['number'],'token': token, 'type': 'num', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']
@@ -94,7 +94,7 @@ def operator(anchor, file, char, writer):
     else:
       error(lookahead, next_char, file, writer)
       return
-  print(f"Operador encontrado: {token}")
+  #print(f"Operador encontrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['operator'],'token': token, 'type': 'op', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']
@@ -114,7 +114,7 @@ def separator(anchor, file, char, writer):
     else:
       error(lookahead, next_char, file, writer)
       return
-  print(f"Separador encontrado: {token}")
+  #print(f"Separador encontrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['separator'],'token': token, 'type': 'sep', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']
@@ -137,7 +137,7 @@ def literal(anchor, file, char, writer):
     print(f"Erro: literal não fechado iniciado na linha {anchor['line']}, coluna {anchor['column']}")
     error(anchor, start_quote , file, writer)
     return
-  print(f"Literal encontrado: {token}")
+  #print(f"Literal encontrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['literal'],'token': token, 'type': 'lit', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']
@@ -171,7 +171,7 @@ def comment(anchor, file, char, writer):
         lookahead['line'] += 1
         lookahead['column'] = 0
         break
-  print(f"Comentário econtrado: {token}")
+  #print(f"Comentário econtrado: {token}")
   writer.writerow({'id': TOKEN_TYPE_IDS['comment'],'token': token, 'type': 'com', 'line': anchor['line'], 'column': anchor['column']})
   anchor['column'] = lookahead['column']
   anchor['line'] = lookahead['line']

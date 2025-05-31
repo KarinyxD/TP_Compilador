@@ -3,7 +3,14 @@ x = 10 + 20;  # Outro comentário
 y = x * 2;
 
 #$ Este é um comentário
-multi-linha que termina aqui $#
+multi-linha que termina aqui$#
 
+float f = 2;
 z = "string literal";
 w = 'outro literal';
+
+for(int a=2;a<5;a = a+1){
+  if(a < 3){
+    a = a - 2;
+  }
+}
