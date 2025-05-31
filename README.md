@@ -59,7 +59,7 @@ Desenvolver um compilador funcional que seja capaz de traduzir uma linguagem de 
 
   Após o processo, você verá no terminal a saída da AST gerada.
 
-  Limpeza dos arquivos gerados
+  #### Limpeza dos arquivos gerados
 
   Para limpar os arquivos executáveis e gerados, rode:
 
