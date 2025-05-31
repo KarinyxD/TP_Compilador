@@ -3,6 +3,9 @@ import sys
 import pickle
 from tree import *
 
+ARITHMETIC_OPS = {"+", "-", "*", "/", "^", ">", "<", "==", "&&", "||", "<=", ">=", "!="}
+TYPES = {"int", "float", "char", "bool"}
+
 # Estrutura para representar um token
 class Token:
     def __init__(self, id, token, type, line, column):
@@ -68,7 +71,7 @@ class Parser:
         return
 
       if token.type == "id":
-        if token.token == "int":
+        if token.token in TYPES:
           node = self.parse_declaration()
           self.match(";")  # consumir ';' após declaração
           return node
@@ -76,10 +79,6 @@ class Parser:
           return self.parse_if()
         elif token.token == "for":
           return self.parse_for()
-        elif token.token == "print":
-          node = self.parse_print()
-          self.match(";")  # consumir ';' após declaração
-          return node
         else:
           node = self.parse_assignment()
           self.match(";")  # consumir ';' após declaração
@@ -123,13 +122,6 @@ class Parser:
         bloco = self.parse_block()
         return ForStmt(init, cond, update, bloco)
 
-    def parse_print(self):
-        self.match("print")
-        self.match("(")
-        lit = self.match_type("lit").token
-        self.match(")")
-        return PrintStmt(lit)
-
     def parse_block(self):
         self.match("{")
         stmts = []
@@ -142,7 +134,7 @@ class Parser:
 
     def parse_expr(self):
         left = self.parse_term()
-        while self.peek() and self.peek().token in ("+", "-", "*", "/", ">", "<", "==", "!="):
+        while self.peek() and self.peek().token in ARITHMETIC_OPS:
             op = self.match(self.peek().token).token
             right = self.parse_term()
             left = BinOp(op, left, right)
@@ -150,7 +142,12 @@ class Parser:
 
     def parse_term(self):
         token = self.peek()
-        if token.type in ("id", "num", "lit"):
+
+        if token.token == "!":  # operador unário de negação
+            self.match("!")
+            right = self.parse_term()
+            return Term(f"!{right.value}")
+        elif token.type in ("id", "num", "lit"):
             self.current += 1
             return Term(token.token)
         elif token.token == "(":
@@ -181,9 +178,9 @@ def main():
     print("AST gerada:")
     ast.pretty_print()
     # Salvar em arquivo
-    with open("ast.pkl", "wb") as f:
+    with open("AnalisadorSintatico/ast.pkl", "wb") as f:
         pickle.dump(ast, f)
-    print("AST salva em ast.pkl")
+    print("AST salva em AnalisadorSintatico/ast.pkl")
     print("Análise sintática concluída com sucesso.")
 
 if __name__ == "__main__":
