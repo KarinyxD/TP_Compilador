@@ -2,7 +2,7 @@
 
 ## Especificações
 
-Este projeto consiste no desenvolvimento de um compilador para a disciplina de **Compiladores** da **UFSJ** no período **2025-1**. O compilador será desenvolvido em etapas, com entregas específicas para cada componente do processo de compilação. A primeira entrega será o **Analisador Léxico**.
+Este projeto consiste no desenvolvimento de um compilador para a disciplina de **Compiladores** da **UFSJ** no período **2025-1**. O compilador será desenvolvido em etapas, com entregas específicas para cada componente do processo de compilação. 
 
 ### Objetivo Geral
 
