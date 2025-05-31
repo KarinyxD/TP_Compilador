@@ -61,13 +61,13 @@ Desenvolver um compilador funcional que seja capaz de traduzir uma linguagem de 
 
   #### Limpeza dos arquivos gerados
 
-  Para limpar os arquivos executáveis e gerados, rode:
+  Para limpar os arquivos gerados, rode:
 
   ```bash
   make clean
   ```
 
-  Isso vai apagar o executável lexer e o arquivo ast.pkl.
+  Isso vai apagar o arquivo da árvore sintática(ast.pkl) e o arquivo de tokens(tokens.csv)
 
   ###### Nota
 
