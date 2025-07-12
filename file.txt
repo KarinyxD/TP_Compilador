@@ -1,16 +1,34 @@
-# Este é um comentário de uma linha
-x = 10 + 20;  # Outro comentário
-y = x * 2;
+# Comentário de uma linha
 
-#$ Este é um comentário
-multi-linha que termina aqui$#
+int x;
+int y = x - 3;
+int z = y * 2;
+int w = z / 4;
+int a = x ^ 2;
 
-float f = 2;
-z = "string literal";
-w = 'outro literal';
+float pi = 3.14;
+char simbolo = '_';
 
-for(int a=2;a<5;a = a+1){
-  if(a < 3){
-    a = a - 2;
+string1 = "isso é uma string";
+string2 = "multi
+linha";
+
+#$ Comentário
+   de várias linhas
+   ignorado corretamente $#
+
+
+resultado = (x + y) * (z - w) / a;
+comparacao1 = x > y;
+comparacao4 = x != y;
+comparacao5 = x >= y;
+comparacao6 = x <= y;
+
+bool logico1 = True && False;
+bool logico2 = True || False;
+
+for(int i = 0; i < 10; i = i + 1) {
+  if(i == 5) {
+    i = i + 3;
   }
 }

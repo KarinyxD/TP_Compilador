@@ -25,7 +25,7 @@ Desenvolver um compilador funcional que seja capaz de traduzir uma linguagem de 
 |---------------------|--------------------------------------------------------------------------|--------------------------------------------------------------------------------|
 | **Identificadores** | Letras, números e `_`, podem começar apenas com letra ou `_`.            | Identificadores começando com números ou contendo caracteres especiais.        |
 | **Números**         | Dígitos com ou sem um único ponto decimal.                               | Múltiplos pontos ou caracteres misturados com números.                         |
-| **Operadores**      | `+`, `==`, `&&`, `*`, `=`, `^`, `-`, `<=`, `>=`, `!=`, `<`, `>`, `\|\|`.| Operadores não definidos (`===`, `%`, `!`, `&\|`, `++`, `--`, etc.).            |
+| **Operadores**      | `+`, `==`, `&&`, `*`, `=`, `^`, `-`, `<=`, `>=`, `!=`, `<`, `>`, `\|\|`. | Operadores não definidos ou binários(`===`, `%`, `!`, `&\|`, `++`, `--`, etc.).|
 | **Separadores**     | `\n`, `;`, `{`, `}`, `,`, `(`, `)`.                                      | Outros caracteres como `[`, `]`, `:`.                                          |
 | **Literais**        | Strings delimitadas por aspas simples ou duplas(pode conter quebra de linha).| Literais não fechados.                                                     |
 | **Comentários**     | `#` para uma linha, `#$ ... $#` para múltiplas linhas.                   | Comentários multi-linha não fechados. O caractere `#` imediatamente após alguma palavra. Ex.: `int#comentário`|

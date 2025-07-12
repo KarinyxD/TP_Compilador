@@ -1,10 +1,24 @@
-x = 10  # Identificador e número
-y = x + 5.5  # Operação com número decimal
-z = "string não fechada"  # Literal não fechado
-a = 'outro literal'  # Literal válido
-b = 20 + @;  # Caractere inválido
-#$ Comentário multi-linha
-que não termina corretamente
-c = 30;
-#$ Comentário multi-linha correto
-termina aqui $#
+# Comentário de uma linha
+
+int x = 2;
+int y = x + 3;
+char d = 't';
+int z = d * 2;
+
+string1 = "isso é uma string";
+
+#$ Comentário
+   de várias linhas
+   ignorado corretamente $#
+
+bool t = True;
+bool f = False;
+bool logico1 = t && f;
+
+for(int i = 0; i < 10; i = i + 1) {
+  if(logico1) {
+    i = i + 3;
+  }
+}
+
+int y;

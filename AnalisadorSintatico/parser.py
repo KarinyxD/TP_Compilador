@@ -15,9 +15,6 @@ class Token:
         self.line = int(line)
         self.column = int(column)
 
-    def __repr__(self):
-        return f"Token({self.token}, {self.type}, line={self.line}, col={self.column})"
-
 # Classe principal do Parser
 class Parser:
     def __init__(self, tokens):
@@ -62,56 +59,62 @@ class Parser:
         return Program(statements)
 
     def parse_stmt(self):
-      # Pula todos os comentários antes de analisar o próximo comando
-      while self.peek() and self.peek().type == "com":
-        self.current += 1
+        # Pula todos os comentários antes de analisar o próximo comando
+        while self.peek() and self.peek().type == "com":
+            self.current += 1
 
-      token = self.peek()
-      if not token:
-        return
+        token = self.peek()
+        if not token:
+            return
 
-      if token.type == "id":
-        if token.token in TYPES:
-          node = self.parse_declaration()
-          self.match(";")  # consumir ';' após declaração
-          return node
-        elif token.token == "if":
-          return self.parse_if()
-        elif token.token == "for":
-          return self.parse_for()
+        if token.type == "id":
+            if token.token in TYPES:
+                node = self.parse_declaration()
+                self.match(";")  # consumir ';' após declaração
+                return node
+            elif token.token == "if":
+                return self.parse_if()
+            elif token.token == "for":
+                return self.parse_for()
+            else:
+                node = self.parse_assignment()
+                self.match(";")  # consumir ';' após declaração
+                return node
         else:
-          node = self.parse_assignment()
-          self.match(";")  # consumir ';' após declaração
-          return node
-      else:
-        # Se chegar aqui, comando inválido para simplificação
-        print(f"[Erro] Linha {token.line}, Coluna {token.column}: Comando inválido: '{token.token}'")
-        self.current += 1  # Avança para tentar continuar a análise
-        return
+            # Se chegar aqui, comando inválido para simplificação
+            print(f"[Erro] Linha {token.line}, Coluna {token.column}: Comando inválido: '{token.token}'")
+            self.current += 1  # Avança para tentar continuar a análise
+            return
 
     def parse_declaration(self):
-        tipo = self.match_type("id").token
-        identificador = self.match_type("id").token
-        self.match("=")
-        expr = self.parse_expr()
-        return Declaration(tipo, identificador, expr)
+        tipo_token = self.match_type("id")
+        identificador_token = self.match_type("id")
+
+        # Verifica se há um '=' após o identificador
+        if self.peek() and self.peek().token == "=":
+            self.match("=")
+            expr = self.parse_expr()
+        else:
+            expr = None  # Nenhuma expressão fornecida
+
+        return Declaration(tipo_token.token, identificador_token.token, expr, linha=identificador_token.line)
 
     def parse_assignment(self):
-        identificador = self.match_type("id").token
+        identificador_token = self.match_type("id")
         self.match("=")
         expr = self.parse_expr()
-        return Assignment(identificador, expr)
+        return Assignment(identificador_token.token, expr, linha=identificador_token.line)
 
     def parse_if(self):
-        self.match("if")
+        if_token = self.match("if")
         self.match("(")
         cond = self.parse_expr()
         self.match(")")
         bloco = self.parse_block()
-        return IfStmt(cond, bloco)
+        return IfStmt(cond, bloco, linha=if_token.line)
 
     def parse_for(self):
-        self.match("for")
+        for_token = self.match("for")
         self.match("(")
         init = self.parse_declaration()
         self.match(";")
@@ -120,7 +123,7 @@ class Parser:
         update = self.parse_assignment()
         self.match(")")
         bloco = self.parse_block()
-        return ForStmt(init, cond, update, bloco)
+        return ForStmt(init, cond, update, bloco, linha=for_token.line)
 
     def parse_block(self):
         self.match("{")
@@ -146,10 +149,10 @@ class Parser:
         if token.token == "!":  # operador unário de negação
             self.match("!")
             right = self.parse_term()
-            return Term(f"!{right.value}")
+            return Term(f"!{right.value}", linha=token.line)
         elif token.type in ("id", "num", "lit"):
             self.current += 1
-            return Term(token.token)
+            return Term(token.token, linha=token.line)
         elif token.token == "(":
             self.match("(")
             expr = self.parse_expr()
@@ -169,7 +172,7 @@ def load_tokens_from_csv(file_path):
 
 def main():
     if len(sys.argv) != 2:
-        print("Uso: python parser.py <tokens.csv>")
+        print("Uso: python3 parser.py <tokens.csv>")
         return
 
     tokens = load_tokens_from_csv(sys.argv[1])
