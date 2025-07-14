@@ -2,10 +2,6 @@ from tree import Program, Declaration, Assignment, IfStmt, ForStmt, Block, Expr,
 from type_check import descobrir_tipo
 from var_table import tabela_declaracao
 
-# Tabela de declaração      
-label_counter = [0]  # Para gerar rótulos únicos
-
-
 label_counter = [0]
 
 def novo_label(base):
@@ -24,7 +20,7 @@ def gerar_codigo_mips(ast, tabela_declaracao):
             codigo += f"{var}: .byte 0\n"
         else:
             codigo += f"{var}: .word 0\n"
-    codigo += "\n.text\n.globl main\nmain:\n"
+    codigo += "\n.text\n"
     codigo += gerar_codigo_mips_rec(ast)
     return codigo
 
@@ -37,7 +33,6 @@ def gerar_codigo_mips_rec(no, reg_stack=None):
     if isinstance(no, Program):
         for stmt in no.statements:
             codigo += gerar_codigo_mips_rec(stmt, reg_stack)
-        codigo += "li $v0, 10\nsyscall\n"
         return codigo
 
     elif isinstance(no, Declaration):
@@ -50,7 +45,7 @@ def gerar_codigo_mips_rec(no, reg_stack=None):
             elif tipo == "float":
                 codigo += expr_codigo
                 codigo += f"swc1 $f0, {no.nome}\n"
-            else:  # int
+            else: 
                 codigo += expr_codigo
                 codigo += f"sw {reg_stack[0]}, {no.nome}\n"
         return codigo
@@ -69,25 +64,25 @@ def gerar_codigo_mips_rec(no, reg_stack=None):
         tipo_dir = descobrir_tipo(no.right)
         op = no.op
 
-        # Operações com float
         if tipo_esq == "float" or tipo_dir == "float":
-            left_code = gerar_codigo_mips_rec(no.left, reg_stack[1:])
-            right_code = gerar_codigo_mips_rec(no.right, reg_stack[2:])
+            left_code = gerar_codigo_mips_rec(no.left, [reg_stack[1]] + reg_stack[3:])
+            right_code = gerar_codigo_mips_rec(no.right, [reg_stack[2]] + reg_stack[3:])
             codigo = ""
 
             if tipo_esq == "int":
                 codigo += left_code
-                codigo += f"mtc1 {reg_stack[0]}, $f1\ncvt.s.w $f1, $f1\n"
+                codigo += f"mtc1 {reg_stack[1]}, $f1\ncvt.s.w $f1, $f1\n"
             else:
                 codigo += left_code
                 codigo += f"mov.s $f1, $f0\n"
 
             if tipo_dir == "int":
                 codigo += right_code
-                codigo += f"mtc1 {reg_stack[0]}, $f2\ncvt.s.w $f2, $f2\n"
+                codigo += f"mtc1 {reg_stack[2]}, $f2\ncvt.s.w $f2, $f2\n"
             else:
                 codigo += right_code
                 codigo += f"mov.s $f2, $f0\n"
+
 
             if op == "+":
                 codigo += "add.s $f0, $f1, $f2\n"
@@ -95,19 +90,15 @@ def gerar_codigo_mips_rec(no, reg_stack=None):
                 codigo += "mul.s $f0, $f1, $f2\n"
             return codigo
 
-        # Operações com int, bool, char (usando registradores inteiros)
         else:
+            result_reg = reg_stack[0]
             left_reg = reg_stack[1]
             right_reg = reg_stack[2]
-            result_reg = reg_stack[0]
 
-            left_code = gerar_codigo_mips_rec(no.left, reg_stack[1:])
-            right_code = gerar_codigo_mips_rec(no.right, reg_stack[2:])
+            left_code = gerar_codigo_mips_rec(no.left, [left_reg] + reg_stack[3:])
+            right_code = gerar_codigo_mips_rec(no.right, [right_reg] + reg_stack[3:])
 
-            codigo = (
-                left_code + f"move {left_reg}, {reg_stack[0]}\n" +
-                right_code + f"move {right_reg}, {reg_stack[0]}\n"
-            )
+            codigo = left_code + right_code
 
             if op == "+":
                 codigo += f"add {result_reg}, {left_reg}, {right_reg}\n"
@@ -119,29 +110,31 @@ def gerar_codigo_mips_rec(no, reg_stack=None):
                 codigo += f"slt {result_reg}, {left_reg}, {right_reg}\n"
             return codigo
 
+
     elif isinstance(no, Term):
+        reg = reg_stack[0]
         if no.value == "True":
-            return "li $t0, 1\n"
+            return f"li {reg}, 1\n"
         elif no.value == "False":
-            return "li $t0, 0\n"
+            return f"li {reg}, 0\n"
         elif isinstance(no.value, str) and no.value.isdigit():
-            return f"li $t0, {no.value}\n"
+            return f"li {reg}, {no.value}\n"
         elif isinstance(no.value, str) and no.value.startswith("'") and no.value.endswith("'"):
-            return f"li $t0, {ord(no.value[1])}\n"
+            return f"li {reg}, {ord(no.value[1])}\n"
         elif isinstance(no.value, str):
             try:
                 float(no.value)
-                return f"li.s $f0, {no.value}\n"
+                return f"li.s $f0, {no.value}\n" 
             except ValueError:
                 tipo = tabela_declaracao.get(no.value, {}).get("tipo", "int")
                 if tipo == "char" or tipo == "bool":
-                    return f"lb $t0, {no.value}\n"
+                    return f"lb {reg}, {no.value}\n"
                 elif tipo == "float":
                     return f"lwc1 $f0, {no.value}\n"
                 else:
-                    return f"lw $t0, {no.value}\n"
+                    return f"lw {reg}, {no.value}\n"
         elif isinstance(no.value, int):
-            return f"li $t0, {no.value}\n"
+            return f"li {reg}, {no.value}\n"
         elif isinstance(no.value, float):
             return f"li.s $f0, {no.value}\n"
         else:

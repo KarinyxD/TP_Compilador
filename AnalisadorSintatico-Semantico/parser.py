@@ -179,7 +179,7 @@ def main():
     parser = Parser(tokens)
     ast = parser.parse()
     # print("AST gerada:")
-    # ast.pretty_print()
+    ast.pretty_print()
     # Salvar em arquivo
     with open("AnalisadorSintatico-Semantico/ast.pkl", "wb") as f:
         pickle.dump(ast, f)
