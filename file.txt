@@ -1,34 +1,20 @@
 # Comentário de uma linha
 
-int x;
-int y = x - 3;
-int z = y * 2;
-int w = z / 4;
-int a = x ^ 2;
-
-float pi = 3.14;
-char simbolo = '_';
-
-string1 = "isso é uma string";
-string2 = "multi
-linha";
+int x = 2;
+float y = x + 3.2;
+char d = 't';
+int z = (x + (x * 2)) + 1;
 
 #$ Comentário
    de várias linhas
    ignorado corretamente $#
 
-
-resultado = (x + y) * (z - w) / a;
-comparacao1 = x > y;
-comparacao4 = x != y;
-comparacao5 = x >= y;
-comparacao6 = x <= y;
-
-bool logico1 = True && False;
-bool logico2 = True || False;
+bool t = True;
+bool f = False;
+bool logico1 = t && f;
 
 for(int i = 0; i < 10; i = i + 1) {
-  if(i == 5) {
+  if(logico1) {
     i = i + 3;
   }
 }

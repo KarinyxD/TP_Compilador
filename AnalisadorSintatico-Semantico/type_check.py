@@ -1,6 +1,6 @@
 import pickle
 from tree import Program, Declaration, Assignment, IfStmt, ForStmt, Block, Expr, BinOp, Term
-from semantic2 import tabela_declaracao, declarar_variavel, usar_variavel, inicializar_variavel, mostrar_tabela, tabela_variaveis
+from var_table import tabela_declaracao, declarar_variavel, usar_variavel, inicializar_variavel, mostrar_tabela, tabela_variaveis
 
 # Operador +
 tabela_mais = {
@@ -8,7 +8,6 @@ tabela_mais = {
     ("int", "float"): "float",
     ("float", "int"): "float",
     ("float", "float"): "float",
-    ("char", "char"): "char",
 }
 
 # Operador *
@@ -24,6 +23,14 @@ tabela_and = {
     ("bool", "bool"): "bool",
 }
 
+# Operador <
+tabela_menor = {
+    ("int", "int"): "bool",
+    ("float", "float"): "bool",
+    ("int", "float"): "bool",
+    ("float", "int"): "bool",
+}
+
 def valida_operacao(op, tipo1, tipo2):
     if op == "+":
         return tabela_mais.get((tipo1, tipo2), "erro")
@@ -31,25 +38,34 @@ def valida_operacao(op, tipo1, tipo2):
         return tabela_vezes.get((tipo1, tipo2), "erro")
     elif op == "&&":
         return tabela_and.get((tipo1, tipo2), "erro")
+    elif op == "<":
+        return tabela_menor.get((tipo1, tipo2), "erro")
     else:
         return "erro"
 from type_check import valida_operacao
 
 def descobrir_tipo(no):
     if isinstance(no, Term):
-        # Se for literal, retorne o tipo correspondente
         if isinstance(no.value, str):
+            # Int literal
             if no.value.isdigit():
                 return "int"
-            # Adapte para float, char, bool, etc.
+            # Float literal (ex: 3.14)
+            try:
+                if "." in no.value:
+                    float(no.value)  # Só testa se é conversível para float
+                    return "float"
+            except ValueError:
+                pass
+            # Bool literal
             if no.value in ("True", "False"):
                 return "bool"
-            if no.value.startswith("'") and no.value.endswith("'"):
+            # Char literal (ex: 'a')
+            if no.value.startswith("'") and no.value.endswith("'") and len(no.value) == 3:
                 return "char"
             # Se for variável, busque na tabela_declaracao
             if no.value in tabela_declaracao:
                 return tabela_declaracao[no.value]["tipo"]
-        # Adapte para outros casos
         return None
 
     elif isinstance(no, BinOp):

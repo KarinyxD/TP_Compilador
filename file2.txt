@@ -1,15 +1,11 @@
 # Comentário de uma linha
 
 int x = 2;
-int y = x + 3;
+float y = x + 3.2;
 char d = 't';
 int z = d * 2;
 
-string1 = "isso é uma string";
-
-#$ Comentário
-   de várias linhas
-   ignorado corretamente $#
+nao_declarada = 59;
 
 bool t = True;
 bool f = False;

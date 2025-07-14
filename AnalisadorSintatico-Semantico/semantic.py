@@ -1,6 +1,7 @@
 import pickle
+from code_generator import gerar_codigo_mips
 from tree import Program, Declaration, Assignment, IfStmt, ForStmt, Block, Expr, BinOp, Term
-from semantic2 import tabela_variaveis, mostrar_tabela, verificar_tabela
+from var_table import tabela_variaveis, mostrar_tabela, verificar_tabela
 from type_check import descobrir_tipo
 
 if __name__ == "__main__":
@@ -8,7 +9,7 @@ if __name__ == "__main__":
         ast = pickle.load(f)
 
     # 1. Verificações de variáveis
-    tabela_variaveis(ast)
+    tabela_declaracao = tabela_variaveis(ast)
     mostrar_tabela()
     verificar_tabela()
 
@@ -30,6 +31,12 @@ if __name__ == "__main__":
         elif isinstance(no, Block):
             for stmt in no.statements:
                 valida_tipos(stmt)
+        # Adapte para outros nós se necessário
 
     print("\n--- Verificação de Tipos ---")
     valida_tipos(ast)
+    
+    codigo_mips = gerar_codigo_mips(ast, tabela_declaracao)
+    with open("output.asm", "w") as f:
+        f.write(codigo_mips)
+    print("Assembly MIPS gerado em output.asm")

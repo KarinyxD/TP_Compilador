@@ -84,7 +84,8 @@ def tabela_variaveis(no):
     elif isinstance(no, Term):
         if isinstance(no.value, str) and no.value.isidentifier() and no.value not in RESERVADAS:
             usar_variavel(no.value, no.linha)
-            
+    return tabela_declaracao
+     
 def verificar_tabela():
     print("\n--- Verificação da Tabela de Variáveis ---")
     for nome, info in tabela_declaracao.items():

@@ -30,7 +30,7 @@ Desenvolver um compilador funcional que seja capaz de traduzir uma linguagem de 
 | **Literais**        | Strings delimitadas por aspas simples ou duplas(pode conter quebra de linha).| Literais não fechados.                                                     |
 | **Comentários**     | `#` para uma linha, `#$ ... $#` para múltiplas linhas.                   | Comentários multi-linha não fechados. O caractere `#` imediatamente após alguma palavra. Ex.: `int#comentário`|
 | **Erros**           | Caracteres inválidos como `@`, `~`, etc.                                 |                                                                                |
-| **Tipos**           | inteiro (int), float(decimal), bool (True, False), char("exemplo").      | double, void, [] (vetor), etc..                                                |
+| **Tipos**           | inteiro (int), float(decimal), bool (0, 1), char('c').      | double, void, [] (vetor), etc..                                                |
 ## Execução
 
 #### Requisitos

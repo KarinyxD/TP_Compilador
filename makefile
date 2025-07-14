@@ -1,5 +1,5 @@
 LEXICO_DIR = AnalisadorLexico
-SINTATICO_DIR = AnalisadorSintatico
+SINTATICO_DIR = AnalisadorSintatico-Semantico
 
 INPUT_FILE ?= file.txt
 

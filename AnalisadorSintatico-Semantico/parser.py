@@ -178,10 +178,10 @@ def main():
     tokens = load_tokens_from_csv(sys.argv[1])
     parser = Parser(tokens)
     ast = parser.parse()
-    print("AST gerada:")
-    ast.pretty_print()
+    # print("AST gerada:")
+    # ast.pretty_print()
     # Salvar em arquivo
-    with open("AnalisadorSintatico/ast.pkl", "wb") as f:
+    with open("AnalisadorSintatico-Semantico/ast.pkl", "wb") as f:
         pickle.dump(ast, f)
     print("AST salva em AnalisadorSintatico/ast.pkl")
     print("Análise sintática concluída com sucesso.")
